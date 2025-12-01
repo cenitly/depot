@@ -3,7 +3,6 @@
   lib,
   mkNixpakPackage,
   nixpakModules,
-  sops,
   writeShellScriptBin,
   writeTextFile,
   sandbox,
@@ -16,22 +15,6 @@
   ...
 }: let
   mcpServers = {
-    rust-docs-mcp-server-hayro = {
-      type = "stdio";
-      command = sandbox.rust-docs-mcp-server |> lib.getExe;
-      args = [
-        "hayro@0.4.0"
-      ];
-      env = {};
-    };
-    rust-docs-mcp-server-hayro-svg = {
-      type = "stdio";
-      command = sandbox.rust-docs-mcp-server |> lib.getExe;
-      args = [
-        "hayro-svg@0.2.0"
-      ];
-      env = {};
-    };
     docs-rs-mcp = {
       type = "stdio";
       command = sandbox.docs-rs-mcp |> lib.getExe;
@@ -53,7 +36,6 @@
     in {
       app.package = claude-code;
       imports = with nixpakModules; [
-        ../rust-docs-mcp-server/nixpak-module.nix
         ../ungoogled-chromium/nixpak-module.nix
         gui-base
         network
@@ -117,10 +99,6 @@
 in
   writeShellScriptBin "claude-code" ''
     export NIXPAK_WORKING_DIRECTORY="$(pwd)"
-
-    if [ -z "$OPENAI_API_KEY" ]; then
-      export OPENAI_API_KEY="$(${sops |> lib.getExe} -d --extract '["keys"]["openai_api_key"]' ${../../secrets/keys.yaml})"
-    fi
 
     if [ -f "/run/dynamic-ca/ca-certificates.crt" ]; then
       export NIXPAK_SSL_CERTIFICATE="/run/dynamic-ca/ca-certificates.crt"

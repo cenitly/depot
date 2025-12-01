@@ -2,7 +2,6 @@
   nixpkgs,
   system,
   nixpak,
-  rust-docs-mcp-server,
   rust-overlay,
   ...
 }: let
@@ -44,11 +43,9 @@ in
     overlays = [
       (
         self: _: {
-          rust-docs-mcp-server = self.callPackage ./rust-docs-mcp-server {inherit rust-docs-mcp-server rust;};
           docs-rs-mcp = self.callPackage ./docs-rs-mcp {};
           mcp-server-browser = self.callPackage ./mcp-server-browser {};
           sandbox = {
-            rust-docs-mcp-server = self.callPackage ./rust-docs-mcp-server/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
             claude-code = self.callPackage ./claude-code/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
             docs-rs-mcp = self.callPackage ./docs-rs-mcp/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
             mcp-server-browser = self.callPackage ./mcp-server-browser/sandbox.nix {inherit mkNixpakPackage nixpakModules;};

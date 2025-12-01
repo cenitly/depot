@@ -7,9 +7,6 @@
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    rust-docs-mcp-server = {
-      url = "github:Govcraft/rust-docs-mcp-server";
-    };
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -63,7 +60,6 @@
             (pkgs)
             docs-rs-mcp
             mcp-server-browser
-            rust-docs-mcp-server
             sandbox
             ;
         };
