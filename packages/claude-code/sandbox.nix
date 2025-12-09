@@ -29,6 +29,13 @@
       ];
       env = {};
     };
+    godot-mcp = {
+      type = "stdio";
+      command = sandbox.godot-mcp |> lib.getExe;
+      args = [
+      ];
+      env = {};
+    };
   };
   nixpakPackage = mkNixpakPackage {
     config = {sloth, ...}: let

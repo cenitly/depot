@@ -21,6 +21,27 @@
         "type": "github"
       }
     },
+    "godot-mcp": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1765278112,
+        "narHash": "sha256-ugLm8Qos/xVCyrqgPLRh+iTzPwNdEr63CclGsYTcVkk=",
+        "owner": "poly2it",
+        "repo": "Godot-MCP",
+        "rev": "f5b2c8547cd1d1b0428280108fe810c0b0edaaf3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "poly2it",
+        "ref": "fix-npm-deps",
+        "repo": "Godot-MCP",
+        "type": "github"
+      }
+    },
     "hercules-ci-effects": {
       "inputs": {
         "flake-parts": [
@@ -87,6 +108,7 @@
     },
     "root": {
       "inputs": {
+        "godot-mcp": "godot-mcp",
         "nixpak": "nixpak",
         "nixpkgs": "nixpkgs",
         "rust-overlay": "rust-overlay",

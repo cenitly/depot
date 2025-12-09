@@ -15,6 +15,10 @@
       url = "github:poly2it/nixpak?ref=share-pid";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    godot-mcp = {
+      url = "github:poly2it/Godot-MCP?ref=fix-npm-deps";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {
@@ -59,6 +63,7 @@
           inherit
             (pkgs)
             docs-rs-mcp
+            godot-mcp
             mcp-server-browser
             sandbox
             ;
