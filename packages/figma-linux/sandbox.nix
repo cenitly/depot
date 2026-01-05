@@ -41,8 +41,8 @@ mkNixpakPackage {
       };
 
       bind.rw = [
-        (sloth.concat' sloth.picturesDir "/figma")
-        (sloth.concat' sloth.picturesDir "/Figma")
+        (sloth.concat' sloth.xdgPicturesDir "/figma")
+        (sloth.concat' sloth.xdgPicturesDir "/Figma")
         (sloth.concat' sloth.xdgConfigHome "/figma-linux")
       ];
     };
