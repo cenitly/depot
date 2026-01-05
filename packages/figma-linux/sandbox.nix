@@ -10,6 +10,7 @@
 }:
 mkNixpakPackage {
   config = {sloth, ...}: {
+    app.package = figma-linux;
     # app.package = figma-linux.overrideAttrs (self: super: rec {
     #   inherit (super) pname version;
     #   src = fetchFromGitHub {
