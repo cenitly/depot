@@ -41,14 +41,9 @@ mkNixpakPackage {
       };
 
       bind.rw = [
-        (sloth.concat [
-          sloth.xdgConfigHome
-          "/user-dirs.locale.md5sum"
-        ])
-        (sloth.concat [
-          sloth.xdgConfigHome
-          "/user-dirs.dirs"
-        ])
+        (sloth.concat' sloth.picturesDir "/figma")
+        (sloth.concat' sloth.picturesDir "/Figma")
+        (sloth.concat' sloth.xdgConfigHome "/figma-linux")
       ];
     };
   };
