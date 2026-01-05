@@ -52,6 +52,7 @@ in
             godot-mcp = self.callPackage ./godot-mcp/sandbox.nix {inherit mkNixpakPackage nixpakModules godot-mcp;};
             mcp-server-browser = self.callPackage ./mcp-server-browser/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
             ungoogled-chromium = self.callPackage ./ungoogled-chromium/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
+            figma-linux = self.callPackage ./figma-linux/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
           };
         }
       )
