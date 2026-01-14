@@ -1,0 +1,14 @@
+{
+  "name": "@sveltejs/mcp",
+  "version": "0.1.17",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "svelte-mcp": "./dist/index.mjs"
+  },
+  "dependencies": {
+    "eslint": "^9.36.0",
+    "sade": "1.8.1",
+    "tmcp": "^1.19.0"
+  }
+}

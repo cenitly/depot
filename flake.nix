@@ -66,6 +66,7 @@
             godot-mcp
             mcp-server-browser
             sandbox
+            svelte-mcp
             ;
         };
       }
