@@ -34,6 +34,7 @@ packages/
 Use the `/package-npm` skill or see @.claude/skills/package-npm/SKILL.md
 
 Key points:
+
 - Use `importNpmLock` (not `npmDepsHash`) - more idiomatic
 - Fetch from npm registry with `fetchurl`
 - Include `package.json` and `package-lock.json` (without devDependencies)
@@ -42,16 +43,19 @@ Key points:
 ### Registering packages
 
 1. Add to `packages/default.nix` overlay:
+
    ```nix
    <name> = self.callPackage ./<name> {};
    ```
 
 2. Add sandbox to `packages/default.nix`:
+
    ```nix
    sandbox.<name> = self.callPackage ./<name>/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
    ```
 
 3. Export in `flake.nix`:
+
    ```nix
    packages.${system} = { inherit (pkgs) <name>; };
    ```

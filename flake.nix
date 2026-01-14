@@ -63,10 +63,13 @@
           inherit
             (pkgs)
             docs-rs-mcp
+            eslint-mcp
             godot-mcp
+            lucide-icons-mcp
             mcp-server-browser
             sandbox
             svelte-mcp
+            tailwindcss-mcp-server
             ;
         };
       }
