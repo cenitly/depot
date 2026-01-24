@@ -2,9 +2,9 @@
   mkNixpakPackage,
   nixpakModules,
   lib,
-writeShellScriptBin,
-xwayland,
-ghidra,
+  writeShellScriptBin,
+  xwayland,
+  ghidra,
   ...
 }: let
   nixpakPackage = mkNixpakPackage {
