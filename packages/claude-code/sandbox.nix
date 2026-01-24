@@ -142,5 +142,3 @@ in
 
     ${nixpakPackage |> lib.getExe} "$@"
   ''
-# ls
-

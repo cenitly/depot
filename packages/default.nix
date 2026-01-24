@@ -54,13 +54,14 @@ in
             claude-code = self.callPackage ./claude-code/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
             docs-rs-mcp = self.callPackage ./docs-rs-mcp/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
             eslint-mcp = self.callPackage ./eslint-mcp/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
+            figma-linux = self.callPackage ./figma-linux/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
+            ghidra = self.callPackage ./ghidra/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
             godot-mcp = self.callPackage ./godot-mcp/sandbox.nix {inherit mkNixpakPackage nixpakModules godot-mcp;};
             lucide-icons-mcp = self.callPackage ./lucide-icons-mcp/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
             mcp-server-browser = self.callPackage ./mcp-server-browser/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
             svelte-mcp = self.callPackage ./svelte-mcp/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
             tailwindcss-mcp-server = self.callPackage ./tailwindcss-mcp-server/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
             ungoogled-chromium = self.callPackage ./ungoogled-chromium/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
-            figma-linux = self.callPackage ./figma-linux/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
           };
         }
       )
