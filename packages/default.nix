@@ -46,6 +46,7 @@ in
         self: _: {
           docs-rs-mcp = self.callPackage ./docs-rs-mcp {};
           eslint-mcp = self.callPackage ./eslint-mcp {};
+          ghidra-mcp = self.callPackage ./ghidra-mcp {};
           lucide-icons-mcp = self.callPackage ./lucide-icons-mcp {};
           mcp-server-browser = self.callPackage ./mcp-server-browser {};
           svelte-mcp = self.callPackage ./svelte-mcp {};
@@ -56,6 +57,8 @@ in
             eslint-mcp = self.callPackage ./eslint-mcp/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
             figma-linux = self.callPackage ./figma-linux/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
             ghidra = self.callPackage ./ghidra/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
+            ghidra-extended = self.callPackage ./ghidra/sandbox-extended.nix {inherit mkNixpakPackage nixpakModules;};
+            ghidra-mcp = self.callPackage ./ghidra-mcp/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
             godot-mcp = self.callPackage ./godot-mcp/sandbox.nix {inherit mkNixpakPackage nixpakModules godot-mcp;};
             lucide-icons-mcp = self.callPackage ./lucide-icons-mcp/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
             mcp-server-browser = self.callPackage ./mcp-server-browser/sandbox.nix {inherit mkNixpakPackage nixpakModules;};

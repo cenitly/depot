@@ -65,6 +65,12 @@
       ];
       env = {};
     };
+    ghidra-mcp = {
+      type = "stdio";
+      command = sandbox.ghidra-mcp |> lib.getExe;
+      args = [];
+      env = {};
+    };
   };
   nixpakPackage = mkNixpakPackage {
     config = {sloth, ...}: let
