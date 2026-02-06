@@ -44,6 +44,7 @@ in
     overlays = [
       (
         self: _: {
+          claude-code = self.callPackage ./claude-code {};
           docs-rs-mcp = self.callPackage ./docs-rs-mcp {};
           eslint-mcp = self.callPackage ./eslint-mcp {};
           ghidra-mcp = self.callPackage ./ghidra-mcp {};

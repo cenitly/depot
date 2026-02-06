@@ -139,7 +139,7 @@
     };
   };
 in
-  writeShellScriptBin "claude-code" ''
+  writeShellScriptBin "claude" ''
     export NIXPAK_WORKING_DIRECTORY="$(pwd)"
 
     if [ -f "/run/dynamic-ca/ca-certificates.crt" ]; then
