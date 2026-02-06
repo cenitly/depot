@@ -1,0 +1,29 @@
+name: Update claude-code
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch: {}
+concurrency:
+  group: update-claude-code
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: nixbuild/nix-quick-install-action@2c9db80fb984ceb1bcaa77cdda3fdf8cfba92035 # v34
+      - uses: nix-community/cache-nix-action@135667ec418502fa5a3598af6fb9eb733888ce6a # v6
+        with:
+          primary-key: nix-${{ runner.os }}-${{ hashFiles('flake.lock') }}
+          restore-prefixes-first-match: nix-${{ runner.os }}-
+      - id: update
+        run: nix develop .#ci -c go run -C scripts ./cmd/update-claude-code
+      - if: steps.update.outputs.updated == 'true'
+        run: nix develop .#ci -c go run -C scripts ./cmd/create-pr "$VERSION"
+        env:
+          VERSION: ${{ steps.update.outputs.version }}
+          FORGEJO_TOKEN: ${{ secrets.FORGEJO_TOKEN }}
+          FORGEJO_URL: ${{ github.server_url }}
+          FORGEJO_REPO: ${{ github.repository }}

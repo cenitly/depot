@@ -69,18 +69,18 @@ buildNpmPackage (finalAttrs: {
       --set DISABLE_INSTALLATION_CHECKS 1 \
       --unset DEV \
       --prefix PATH : ${
-        lib.makeBinPath (
-          [
-            # claude-code uses [node-tree-kill](https://github.com/pkrumins/node-tree-kill) which requires procps's pgrep(darwin) or ps(linux)
-            procps
-          ]
-          # the following packages are required for the sandbox to work (Linux only)
-          ++ lib.optionals stdenv.hostPlatform.isLinux [
-            bubblewrap
-            socat
-          ]
-        )
-      }
+      lib.makeBinPath (
+        [
+          # claude-code uses [node-tree-kill](https://github.com/pkrumins/node-tree-kill) which requires procps's pgrep(darwin) or ps(linux)
+          procps
+        ]
+        # the following packages are required for the sandbox to work (Linux only)
+        ++ lib.optionals stdenv.hostPlatform.isLinux [
+          bubblewrap
+          socat
+        ]
+      )
+    }
   '';
 
   doInstallCheck = true;
@@ -88,7 +88,7 @@ buildNpmPackage (finalAttrs: {
     writableTmpDirAsHomeHook
     versionCheckHook
   ];
-  versionCheckKeepEnvironment = [ "HOME" ];
+  versionCheckKeepEnvironment = ["HOME"];
 
   meta = {
     description = "Agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster";
