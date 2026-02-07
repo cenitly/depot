@@ -10,7 +10,7 @@ permissions:
   contents: read
 jobs:
   update:
-    runs-on: ubuntu-latest
+    runs-on: linux_amd64:host
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       - uses: nixbuild/nix-quick-install-action@2c9db80fb984ceb1bcaa77cdda3fdf8cfba92035 # v34
