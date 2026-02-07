@@ -109,7 +109,7 @@ func main() {
 	pr, _, err := client.CreatePullRequest(owner, repo, forgejo.CreatePullRequestOption{
 		Head:  branch,
 		Base:  base,
-		Title: fmt.Sprintf("claude-code: update to %s", version),
+		Title: fmt.Sprintf("Update `claude-code` to %s", version),
 		Body:  fmt.Sprintf("Automated update of claude-code to version %s.", version),
 	})
 	if err != nil {
