@@ -83,9 +83,9 @@ func main() {
 
 	// 5. Update version and hash in default.nix
 	content := string(nixContent)
-	content = replaceField(content, `version = "`+regexp.QuoteMeta(currentVersion)+`"`, `version = "`+latestVersion+`"`)
+	content = replaceField(content, `version = "`+currentVersion+`"`, `version = "`+latestVersion+`"`)
 	oldHash := extractField(content, `hash = "(sha256-[^"]+)"`)
-	content = replaceField(content, `hash = "`+regexp.QuoteMeta(oldHash)+`"`, `hash = "`+srcHash+`"`)
+	content = replaceField(content, `hash = "`+oldHash+`"`, `hash = "`+srcHash+`"`)
 
 	if err := os.WriteFile(defaultNix, []byte(content), 0644); err != nil {
 		log.Fatalf("writing default.nix: %v", err)
