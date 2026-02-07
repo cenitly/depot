@@ -207,12 +207,15 @@ func fetchLatestVersion() (string, error) {
 
 // prefetchHash calls nix-prefetch-url and nix hash convert — no pure-Go equivalent.
 func prefetchHash(url string) (string, error) {
-	rawHash, err := runCmd("nix-prefetch-url", "--unpack", url)
+	cmd := exec.Command("nix-prefetch-url", "--unpack", url)
+	// Use Output() instead of CombinedOutput() so stderr ("path is '...'") is excluded.
+	out, err := cmd.Output()
 	if err != nil {
 		return "", fmt.Errorf("nix-prefetch-url: %w", err)
 	}
+	rawHash := strings.TrimSpace(string(out))
 
-	sriHash, err := runCmd("nix", "hash", "convert", "--to", "sri", "--hash-algo", "sha256", strings.TrimSpace(rawHash))
+	sriHash, err := runCmd("nix", "hash", "convert", "--to", "sri", "--hash-algo", "sha256", rawHash)
 	if err != nil {
 		return "", fmt.Errorf("nix hash convert: %w", err)
 	}
