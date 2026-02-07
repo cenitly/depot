@@ -150,7 +150,7 @@ func main() {
 	log.Printf("Sandbox built: %s", sandboxPath)
 
 	// 10. Commit
-	commitMsg := fmt.Sprintf("claude-code: update to %s", latestVersion)
+	commitMsg := fmt.Sprintf("Update claude-code to %s", latestVersion)
 	_, err = wt.Commit(commitMsg, &git.CommitOptions{
 		Author: &object.Signature{
 			Name:  "CI",
