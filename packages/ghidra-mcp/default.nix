@@ -8,8 +8,7 @@
   ghidra,
   symlinkJoin,
   makeBinaryWrapper,
-}:
-let
+}: let
   pname = "ghidra-mcp";
   version = "1.4";
 

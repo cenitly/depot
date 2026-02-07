@@ -55,13 +55,23 @@
         devShells.${system} = {
           default = pkgs.mkShell {
             buildInputs = with pkgs; [
+              actionlint
+              jq
               sops
+            ];
+          };
+          ci = pkgs.mkShell {
+            buildInputs = with pkgs; [
+              go
+              nodejs
+              nix
             ];
           };
         };
         packages.${system} = {
           inherit
             (pkgs)
+            claude-code
             docs-rs-mcp
             eslint-mcp
             ghidra-mcp
