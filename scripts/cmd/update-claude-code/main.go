@@ -380,9 +380,10 @@ func nixBuild(repoDir, target string) (string, error) {
 	cmd := exec.Command("nix", "build", target, "--no-link", "--print-out-paths")
 	cmd.Dir = repoDir
 	cmd.Env = append(os.Environ(), "NIXPKGS_ALLOW_UNFREE=1")
-	out, err := cmd.CombinedOutput()
+	cmd.Stderr = os.Stderr
+	out, err := cmd.Output()
 	if err != nil {
-		return "", fmt.Errorf("%w\n%s", err, out)
+		return "", err
 	}
 	return strings.TrimSpace(string(out)), nil
 }

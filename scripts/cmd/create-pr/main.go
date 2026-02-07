@@ -97,7 +97,8 @@ func main() {
 		RefSpecs: []config.RefSpec{
 			config.RefSpec(branchRef + ":" + branchRef),
 		},
-		Auth: auth,
+		Auth:  auth,
+		Force: true,
 	})
 	if err != nil {
 		log.Fatalf("pushing branch: %v", err)
