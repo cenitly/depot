@@ -121,8 +121,10 @@ func main() {
 	if err != nil {
 		log.Fatalf("getting worktree: %v", err)
 	}
-	if _, err := wt.Add("packages/claude-code"); err != nil {
-		log.Fatalf("git add: %v", err)
+	for _, f := range []string{"packages/claude-code/default.nix", "packages/claude-code/package-lock.json"} {
+		if _, err := wt.Add(f); err != nil {
+			log.Fatalf("git add %s: %v", f, err)
+		}
 	}
 
 	// 9. Build and test
@@ -340,22 +342,7 @@ func regenLockfile(version, pkgDir string) error {
 	if err != nil {
 		return err
 	}
-	if err := os.WriteFile(filepath.Join(pkgDir, "package-lock.json"), lockfile, 0644); err != nil {
-		return err
-	}
-
-	// Write minimal package.json
-	minimal := map[string]any{}
-	for _, key := range []string{"name", "version", "bin", "dependencies"} {
-		if v, ok := pkg[key]; ok {
-			minimal[key] = v
-		}
-	}
-	minJSON, err := json.MarshalIndent(minimal, "", "  ")
-	if err != nil {
-		return err
-	}
-	return os.WriteFile(filepath.Join(pkgDir, "package.json"), append(minJSON, '\n'), 0644)
+	return os.WriteFile(filepath.Join(pkgDir, "package-lock.json"), lockfile, 0644)
 }
 
 func computeNpmDepsHash(repoDir, defaultNix string) (string, error) {
