@@ -18,9 +18,10 @@ jobs:
       - id: update
         run: nix develop .#ci -c go run -C scripts ./cmd/update-claude-code
       - if: steps.update.outputs.updated == 'true'
-        run: nix develop .#ci -c go run -C scripts ./cmd/create-pr "$VERSION"
+        run: nix develop .#ci -c go run -C scripts ./cmd/create-pr "$VERSION" "$VERSION_PREVIOUS"
         env:
           VERSION: ${{ steps.update.outputs.version }}
+          VERSION_PREVIOUS: ${{ steps.update.outputs.version_previous }}
           FORGEJO_TOKEN: ${{ secrets.FORGEJO_TOKEN }}
           FORGEJO_URL: ${{ github.server_url }}
           FORGEJO_REPO: ${{ github.repository }}

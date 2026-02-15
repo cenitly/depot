@@ -1,10 +1,14 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"log"
+	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"git.cenitly.com/cenitly/depot/scripts/internal/gitutil"
 	"codeberg.org/mvdkleijn/forgejo-sdk/forgejo"
@@ -17,10 +21,11 @@ import (
 func main() {
 	log.SetFlags(0)
 
-	if len(os.Args) < 2 {
-		log.Fatal("usage: create-pr <version>")
+	if len(os.Args) < 3 {
+		log.Fatal("usage: create-pr <version> <old-version>")
 	}
 	version := os.Args[1]
+	oldVersion := os.Args[2]
 
 	token := requireEnv("FORGEJO_TOKEN")
 	forgejoURL := requireEnv("FORGEJO_URL")
@@ -105,12 +110,20 @@ func main() {
 	}
 	log.Printf("Pushed branch: %s", branch)
 
+	// Fetch changelog
+	changelog := fetchChangelog(oldVersion, version)
+
+	body := fmt.Sprintf("Automated update of claude-code from %s to %s.\n", oldVersion, version)
+	if changelog != "" {
+		body += "\n## Changelog\n\n" + changelog
+	}
+
 	// Create PR via Forgejo API
 	pr, _, err := client.CreatePullRequest(owner, repo, forgejo.CreatePullRequestOption{
 		Head:  branch,
 		Base:  base,
 		Title: fmt.Sprintf("Update `claude-code` to %s", version),
-		Body:  fmt.Sprintf("Automated update of claude-code to version %s.", version),
+		Body:  body,
 	})
 	if err != nil {
 		log.Fatalf("creating PR: %v", err)
@@ -124,6 +137,73 @@ func main() {
 	}); err != nil {
 		log.Printf("warning: could not switch back to %s: %v", base, err)
 	}
+}
+
+const changelogURL = "https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md"
+
+// fetchChangelog fetches the upstream CHANGELOG.md and extracts entries between
+// oldVersion (exclusive) and newVersion (inclusive). Returns empty string on error.
+func fetchChangelog(oldVersion, newVersion string) string {
+	client := &http.Client{Timeout: 30 * time.Second}
+	resp, err := client.Get(changelogURL)
+	if err != nil {
+		log.Printf("warning: could not fetch changelog: %v", err)
+		return ""
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		log.Printf("warning: changelog fetch returned %s", resp.Status)
+		return ""
+	}
+
+	return extractChangelog(resp.Body, oldVersion, newVersion)
+}
+
+// extractChangelog reads a CHANGELOG.md and returns lines between the newVersion
+// heading (inclusive) and the oldVersion heading (exclusive).
+// It expects headings like "## [1.2.3]" or "## 1.2.3".
+func extractChangelog(r io.Reader, oldVersion, newVersion string) string {
+	scanner := bufio.NewScanner(r)
+	scanner.Buffer(make([]byte, 0, 64*1024), 1024*1024)
+
+	var buf strings.Builder
+	capturing := false
+
+	for scanner.Scan() {
+		line := scanner.Text()
+
+		if strings.HasPrefix(line, "## ") {
+			if !capturing {
+				// Start capturing when we hit the new version heading
+				if containsVersion(line, newVersion) {
+					capturing = true
+					buf.WriteString(line)
+					buf.WriteByte('\n')
+				}
+			} else {
+				// Include intermediate version headings, stop at old version
+				if containsVersion(line, oldVersion) {
+					break
+				}
+				buf.WriteString(line)
+				buf.WriteByte('\n')
+			}
+			continue
+		}
+
+		if capturing {
+			buf.WriteString(line)
+			buf.WriteByte('\n')
+		}
+	}
+
+	return strings.TrimSpace(buf.String())
+}
+
+// containsVersion checks if a heading line contains the given version string.
+func containsVersion(line, version string) bool {
+	return strings.Contains(line, version)
 }
 
 func requireEnv(key string) string {

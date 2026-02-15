@@ -26,7 +26,13 @@ if [ -n "$UNPINNED" ]; then
 fi
 
 # Run actionlint.
-LINT_OUTPUT=$(actionlint "$FILE_PATH" 2>&1) || true
+REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo ".")
+ACTIONLINT_ARGS=()
+CONFIG="$REPO_ROOT/.forgejo/actionlint.yaml"
+if [ -f "$CONFIG" ]; then
+  ACTIONLINT_ARGS+=(-config-file "$CONFIG")
+fi
+LINT_OUTPUT=$(actionlint "${ACTIONLINT_ARGS[@]}" "$FILE_PATH" 2>&1) || true
 if [ -n "$LINT_OUTPUT" ]; then
   ERRORS+="actionlint errors in $FILE_PATH:"$'\n'
   ERRORS+="$LINT_OUTPUT"$'\n'

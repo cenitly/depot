@@ -165,6 +165,7 @@ func main() {
 	log.Printf("UPDATED %s", latestVersion)
 	setOutput("updated", "true")
 	setOutput("version", latestVersion)
+	setOutput("version_previous", currentVersion)
 }
 
 func extractField(content, pattern string) string {
