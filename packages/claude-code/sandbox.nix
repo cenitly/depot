@@ -14,68 +14,15 @@
   gawk,
   ...
 }: let
-  mcpServers = {
-    docs-rs-mcp = {
-      type = "stdio";
-      command = sandbox.docs-rs-mcp |> lib.getExe;
-      args = [
-      ];
-      env = {};
-    };
-    mcp-server-browser = {
-      type = "stdio";
-      command = sandbox.mcp-server-browser |> lib.getExe;
-      args = [
-      ];
-      env = {};
-    };
-    # godot-mcp = {
-    #   type = "stdio";
-    #   command = sandbox.godot-mcp |> lib.getExe;
-    #   args = [
-    #   ];
-    #   env = {};
-    # };
-    svelte-mcp = {
-      type = "stdio";
-      command = sandbox.svelte-mcp |> lib.getExe;
-      args = [
-      ];
-      env = {};
-    };
-    eslint-mcp = {
-      type = "stdio";
-      command = sandbox.eslint-mcp |> lib.getExe;
-      args = [
-      ];
-      env = {};
-    };
-    lucide-icons-mcp = {
-      type = "stdio";
-      command = sandbox.lucide-icons-mcp |> lib.getExe;
-      args = [
-        "--stdio"
-      ];
-      env = {};
-    };
-    tailwindcss-mcp-server = {
-      type = "stdio";
-      command = sandbox.tailwindcss-mcp-server |> lib.getExe;
-      args = [
-      ];
-      env = {};
-    };
-    ghidra-mcp = {
-      type = "stdio";
-      command = sandbox.ghidra-mcp |> lib.getExe;
-      args = [];
-      env = {};
-    };
+  mcpServers = import ./mcp-servers.nix {inherit lib sandbox;};
+  mcpJson = writeTextFile {
+    name = "mcp.json";
+    text =
+      {inherit mcpServers;}
+      |> builtins.toJSON;
   };
   nixpakPackage = mkNixpakPackage {
-    config = {sloth, ...}: let
-      workingDir = sloth.env "NIXPAK_WORKING_DIRECTORY";
-    in {
+    config = {sloth, ...}: {
       app.package = claude-code;
       imports = with nixpakModules; [
         ../ungoogled-chromium/nixpak-module.nix
@@ -120,18 +67,6 @@
           "/nix/var/nix"
           "/run/current-system"
           "/usr/bin/env"
-          [
-            ((writeTextFile {
-                name = ".mcp.json";
-                text =
-                  {
-                    inherit mcpServers;
-                  }
-                  |> builtins.toJSON;
-              })
-              |> toString)
-            (sloth.concat' workingDir "/.mcp.json")
-          ]
         ];
         # Required for raw terminal mode access.
         sharePgid = true;
@@ -148,5 +83,5 @@ in
 
     mkdir -p "$HOME/.claude"
 
-    ${nixpakPackage |> lib.getExe} "$@"
+    ${nixpakPackage |> lib.getExe} --mcp-config ${mcpJson} "$@"
   ''
