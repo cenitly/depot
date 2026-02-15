@@ -146,5 +146,7 @@ in
       export NIXPAK_SSL_CERTIFICATE="/run/dynamic-ca/ca-certificates.crt"
     fi
 
+    mkdir -p "$HOME/.claude"
+
     ${nixpakPackage |> lib.getExe} "$@"
   ''
