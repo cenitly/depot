@@ -59,8 +59,9 @@ in
             docs-rs-mcp = self.callPackage ./docs-rs-mcp/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
             eslint-mcp = self.callPackage ./eslint-mcp/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
             figma-linux = self.callPackage ./figma-linux/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
-            ghidra = self.callPackage ./ghidra/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
-            ghidra-extended = self.callPackage ./ghidra/sandbox-extended.nix {inherit mkNixpakPackage nixpakModules;};
+            ghidra = (self.callPackage ./ghidra/sandbox.nix {inherit mkNixpakPackage nixpakModules;}) // {
+              wrapped = self.callPackage ./ghidra/wrapped.nix {inherit mkNixpakPackage nixpakModules;};
+            };
             ghidra-mcp = self.callPackage ./ghidra-mcp/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
             godot-mcp = self.callPackage ./godot-mcp/sandbox.nix {inherit mkNixpakPackage nixpakModules godot-mcp;};
             lucide-icons-mcp = self.callPackage ./lucide-icons-mcp/sandbox.nix {inherit mkNixpakPackage nixpakModules;};

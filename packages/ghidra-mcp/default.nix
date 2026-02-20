@@ -5,9 +5,6 @@
   unzip,
   python3Packages,
   makeWrapper,
-  ghidra,
-  symlinkJoin,
-  makeBinaryWrapper,
 }: let
   pname = "ghidra-mcp";
   version = "1.4";
@@ -82,24 +79,6 @@ in
 
     passthru = {
       inherit extension;
-
-      # Ghidra bundled with the MCP extension
-      ghidraWithExtension = symlinkJoin {
-        name = "ghidra-with-mcp-${ghidra.version}";
-        paths = [extension];
-        nativeBuildInputs = [makeBinaryWrapper];
-        postBuild = ''
-          # Prevent attempted creation of plugin lock files in the Nix store
-          touch $out/lib/ghidra/Ghidra/.dbDirLock
-
-          makeWrapper '${ghidra}/bin/ghidra' "$out/bin/ghidra" \
-            --set NIX_GHIDRAHOME "$out/lib/ghidra/Ghidra"
-          makeWrapper '${ghidra}/bin/ghidra-analyzeHeadless' "$out/bin/ghidra-analyzeHeadless" \
-            --set NIX_GHIDRAHOME "$out/lib/ghidra/Ghidra"
-          ln -s ${ghidra}/share $out/share
-        '';
-        inherit (ghidra) meta;
-      };
     };
 
     meta = {
