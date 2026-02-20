@@ -1,39 +1,58 @@
 {
   lib,
   stdenv,
-  fetchurl,
+  fetchFromGitHub,
+  maven,
   unzip,
+  ghidra,
   python3Packages,
   makeWrapper,
-  ghidra,
-  symlinkJoin,
-  makeBinaryWrapper,
 }: let
   pname = "ghidra-mcp";
   version = "1.4";
 
-  src = fetchurl {
-    url = "https://github.com/LaurieWired/GhidraMCP/releases/download/${version}/GhidraMCP-release-1-4.zip";
-    hash = "sha256-uBylJA/d5X6k6JkXDc2f3ubtKSRigMdCY6UJv8/H5zQ=";
+  src = fetchFromGitHub {
+    owner = "LaurieWired";
+    repo = "GhidraMCP";
+    tag = version;
+    hash = "sha256-9NzmYQqfvQm5wjmmPWOG1+g9zCzGrUrRZX+m1nRS0m4=";
   };
 
-  # The Ghidra extension component (for use with ghidra.withExtensions)
-  extension = stdenv.mkDerivation {
+  # Symlink Ghidra JARs into lib/ for system-scoped Maven dependencies.
+  # These correspond to the <systemPath> entries in the upstream pom.xml.
+  symlinkGhidraJars = ''
+    mkdir -p lib
+    ln -sf ${ghidra}/lib/ghidra/Ghidra/Framework/Generic/lib/Generic.jar lib/Generic.jar
+    ln -sf ${ghidra}/lib/ghidra/Ghidra/Framework/SoftwareModeling/lib/SoftwareModeling.jar lib/SoftwareModeling.jar
+    ln -sf ${ghidra}/lib/ghidra/Ghidra/Framework/Project/lib/Project.jar lib/Project.jar
+    ln -sf ${ghidra}/lib/ghidra/Ghidra/Framework/Docking/lib/Docking.jar lib/Docking.jar
+    ln -sf ${ghidra}/lib/ghidra/Ghidra/Features/Decompiler/lib/Decompiler.jar lib/Decompiler.jar
+    ln -sf ${ghidra}/lib/ghidra/Ghidra/Framework/Utility/lib/Utility.jar lib/Utility.jar
+    ln -sf ${ghidra}/lib/ghidra/Ghidra/Features/Base/lib/Base.jar lib/Base.jar
+    ln -sf ${ghidra}/lib/ghidra/Ghidra/Framework/Gui/lib/Gui.jar lib/Gui.jar
+  '';
+
+  # The Ghidra extension component (built from source with Maven)
+  extension = maven.buildMavenPackage {
     pname = "${pname}-extension";
     inherit version src;
 
+    mvnHash = "sha256-QBDyNI/srppFoHjvT6GUNAGAq1rO5f+0YVYsy1AMT8w=";
+
     nativeBuildInputs = [unzip];
 
-    unpackPhase = ''
-      unzip $src
-      unzip GhidraMCP-release-1-4/GhidraMCP-1-4.zip
-    '';
+    mvnFetchExtraArgs = {
+      preBuild = symlinkGhidraJars;
+    };
+
+    preBuild = symlinkGhidraJars;
 
     installPhase = ''
       runHook preInstall
 
       mkdir -p $out/lib/ghidra/Ghidra/Extensions
-      cp -r GhidraMCP $out/lib/ghidra/Ghidra/Extensions/
+      # Artifact version is defined in the upstream pom.xml, not the Nix version.
+      unzip target/GhidraMCP-1.0-SNAPSHOT.zip -d $out/lib/ghidra/Ghidra/Extensions/
 
       # Prevent attempted creation of plugin lock files in the Nix store
       touch $out/lib/ghidra/Ghidra/Extensions/GhidraMCP/.dbDirLock
@@ -59,11 +78,9 @@ in
   stdenv.mkDerivation {
     inherit pname version src;
 
-    nativeBuildInputs = [unzip makeWrapper];
+    nativeBuildInputs = [makeWrapper];
 
-    unpackPhase = ''
-      unzip $src
-    '';
+    dontBuild = true;
 
     installPhase = ''
       runHook preInstall
@@ -71,7 +88,7 @@ in
       mkdir -p $out/bin $out/lib
 
       # Install the bridge script
-      cp GhidraMCP-release-1-4/bridge_mcp_ghidra.py $out/lib/
+      cp bridge_mcp_ghidra.py $out/lib/
 
       # Create wrapper with Python environment
       makeWrapper ${pythonEnv}/bin/python $out/bin/ghidra-mcp \
@@ -82,24 +99,6 @@ in
 
     passthru = {
       inherit extension;
-
-      # Ghidra bundled with the MCP extension
-      ghidraWithExtension = symlinkJoin {
-        name = "ghidra-with-mcp-${ghidra.version}";
-        paths = [extension];
-        nativeBuildInputs = [makeBinaryWrapper];
-        postBuild = ''
-          # Prevent attempted creation of plugin lock files in the Nix store
-          touch $out/lib/ghidra/Ghidra/.dbDirLock
-
-          makeWrapper '${ghidra}/bin/ghidra' "$out/bin/ghidra" \
-            --set NIX_GHIDRAHOME "$out/lib/ghidra/Ghidra"
-          makeWrapper '${ghidra}/bin/ghidra-analyzeHeadless' "$out/bin/ghidra-analyzeHeadless" \
-            --set NIX_GHIDRAHOME "$out/lib/ghidra/Ghidra"
-          ln -s ${ghidra}/share $out/share
-        '';
-        inherit (ghidra) meta;
-      };
     };
 
     meta = {
