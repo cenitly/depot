@@ -7,7 +7,6 @@ Nix flake for packaging and sandboxing applications, primarily MCP servers.
 - **Nix Flakes** - Package management and reproducible builds
 - **Nixpak** - Bubblewrap-based sandboxing framework
 - **treefmt** - Code formatting (Nix, Markdown)
-- **SOPS** - Secret management
 
 ## Project Structure
 
@@ -75,7 +74,3 @@ Located in `packages/nixpak-modules/`:
 - Use `let/in` pattern for package definitions
 - Add files to git before building (`git add`)
 
-## Do Not Modify
-
-- `secrets/` - Encrypted with SOPS
-- `.sops.yaml` - SOPS configuration
