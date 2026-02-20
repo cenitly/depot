@@ -68,9 +68,29 @@ func main() {
 		log.Fatalf("listing PRs: %v", err)
 	}
 	for _, pr := range existingPRs {
-		if pr.Head != nil && pr.Head.Name == branch {
+		if pr.Head == nil || !strings.HasPrefix(pr.Head.Name, "auto-update/claude-code-") {
+			continue
+		}
+		if pr.Head.Name == branch {
 			log.Printf("PR already exists for branch %s: %s", branch, pr.HTMLURL)
 			return
+		}
+		// Close older auto-update PR
+		closed := forgejo.StateClosed
+		_, _, err := client.EditPullRequest(owner, repo, pr.Index, forgejo.EditPullRequestOption{
+			State: &closed,
+		})
+		if err != nil {
+			log.Printf("warning: could not close PR #%d: %v", pr.Index, err)
+		} else {
+			log.Printf("Closed outdated PR #%d: %s", pr.Index, pr.Title)
+		}
+		// Delete the branch
+		_, err = client.DeleteRepoBranch(owner, repo, pr.Head.Name)
+		if err != nil {
+			log.Printf("warning: could not delete branch %s: %v", pr.Head.Name, err)
+		} else {
+			log.Printf("Deleted branch: %s", pr.Head.Name)
 		}
 	}
 
