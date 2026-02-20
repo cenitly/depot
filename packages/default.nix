@@ -65,7 +65,10 @@ in
             ghidra =
               (self.callPackage ./ghidra/sandbox.nix {inherit mkNixpakPackage nixpakModules;})
               // {
-                wrapped = self.callPackage ./ghidra/wrapped.nix {inherit mkNixpakPackage nixpakModules;};
+                wrapped = self.callPackage ./ghidra/sandbox.nix {
+                  inherit mkNixpakPackage nixpakModules;
+                  ghidra = self.callPackage ./ghidra/wrapped.nix {};
+                };
               };
             ghidra-mcp = self.callPackage ./ghidra-mcp/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
             ghidra-mcp-bin = self.callPackage ./ghidra-mcp-bin/sandbox.nix {inherit mkNixpakPackage nixpakModules;};

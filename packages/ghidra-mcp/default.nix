@@ -18,7 +18,8 @@
     hash = "sha256-9NzmYQqfvQm5wjmmPWOG1+g9zCzGrUrRZX+m1nRS0m4=";
   };
 
-  # Symlink Ghidra JARs into lib/ for system-scoped Maven dependencies
+  # Symlink Ghidra JARs into lib/ for system-scoped Maven dependencies.
+  # These correspond to the <systemPath> entries in the upstream pom.xml.
   symlinkGhidraJars = ''
     mkdir -p lib
     ln -sf ${ghidra}/lib/ghidra/Ghidra/Framework/Generic/lib/Generic.jar lib/Generic.jar
@@ -50,6 +51,7 @@
       runHook preInstall
 
       mkdir -p $out/lib/ghidra/Ghidra/Extensions
+      # Artifact version is defined in the upstream pom.xml, not the Nix version.
       unzip target/GhidraMCP-1.0-SNAPSHOT.zip -d $out/lib/ghidra/Ghidra/Extensions/
 
       # Prevent attempted creation of plugin lock files in the Nix store
