@@ -44,12 +44,15 @@ in
     overlays = [
       (
         self: _: {
-          claude-code = (self.callPackage ./claude-code {}) // {
-            wrapped = self.callPackage ./claude-code/wrapped.nix {};
-          };
+          claude-code =
+            (self.callPackage ./claude-code {})
+            // {
+              wrapped = self.callPackage ./claude-code/wrapped.nix {};
+            };
           docs-rs-mcp = self.callPackage ./docs-rs-mcp {};
           eslint-mcp = self.callPackage ./eslint-mcp {};
           ghidra-mcp = self.callPackage ./ghidra-mcp {};
+          ghidra-mcp-bin = self.callPackage ./ghidra-mcp-bin {};
           lucide-icons-mcp = self.callPackage ./lucide-icons-mcp {};
           mcp-server-browser = self.callPackage ./mcp-server-browser {};
           svelte-mcp = self.callPackage ./svelte-mcp {};
@@ -59,10 +62,13 @@ in
             docs-rs-mcp = self.callPackage ./docs-rs-mcp/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
             eslint-mcp = self.callPackage ./eslint-mcp/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
             figma-linux = self.callPackage ./figma-linux/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
-            ghidra = (self.callPackage ./ghidra/sandbox.nix {inherit mkNixpakPackage nixpakModules;}) // {
-              wrapped = self.callPackage ./ghidra/wrapped.nix {inherit mkNixpakPackage nixpakModules;};
-            };
+            ghidra =
+              (self.callPackage ./ghidra/sandbox.nix {inherit mkNixpakPackage nixpakModules;})
+              // {
+                wrapped = self.callPackage ./ghidra/wrapped.nix {inherit mkNixpakPackage nixpakModules;};
+              };
             ghidra-mcp = self.callPackage ./ghidra-mcp/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
+            ghidra-mcp-bin = self.callPackage ./ghidra-mcp-bin/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
             godot-mcp = self.callPackage ./godot-mcp/sandbox.nix {inherit mkNixpakPackage nixpakModules godot-mcp;};
             lucide-icons-mcp = self.callPackage ./lucide-icons-mcp/sandbox.nix {inherit mkNixpakPackage nixpakModules;};
             mcp-server-browser = self.callPackage ./mcp-server-browser/sandbox.nix {inherit mkNixpakPackage nixpakModules;};

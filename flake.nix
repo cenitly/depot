@@ -75,6 +75,7 @@
             docs-rs-mcp
             eslint-mcp
             ghidra-mcp
+            ghidra-mcp-bin
             lucide-icons-mcp
             mcp-server-browser
             sandbox
